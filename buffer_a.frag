@@ -11,8 +11,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
 
     if (iFrame == 0) {
-        vec2 g = fract(8. * fragCoord / iResolution.xy);
-        fragColor = vec4(g.x > .5 != g.y > .5);
+        //vec2 g = fract(8. * fragCoord / iResolution.xy);
+        //fragColor = vec4(g.x > .5 != g.y > .5);
+        float k = float(
+            all(greaterThan(fragCoord, vec2(250))) &&
+            all(lessThan(fragCoord, vec2(450)))
+        );
+        fragColor = vec4(vec3(k), 1.);
         return;
     }
     
@@ -32,9 +37,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float ddx = (right - 2. * center + left);
     
     if (iFrame <= 1) {
-        next = center - .5 * c * (ddy + ddx);
+        next = center - .5 * c * ddx;//(ddy + ddx);
     } else {
-        next = -prev + 2. * center + .5 * c * (ddy + ddx);
+        next = -prev + 2. * center + .5 * c * ddx;//(ddy + ddx);
     }
     
     fragColor = vec4(vec3(next), 1.);
