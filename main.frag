@@ -4,7 +4,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = fragCoord/iResolution.xy;
 
     // Output to screen
-    float u = texture(iChannel0, uv).x;
+    vec4 r = texture(iChannel0, uv);
+    float u = r.x;
+    bool obstacle = r.z > 0.;
     
     u *= 20.;
     
@@ -14,9 +16,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     } else {
         color = vec3(0.1, 0.4, 1.) * -u;
     }
+    
+    if (obstacle) color = vec3(0.5);
    
    
     fragColor = vec4(color, 1.);
     //fragColor = texture(iChannel0, uv);
 }
-

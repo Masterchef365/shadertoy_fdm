@@ -1,3 +1,4 @@
+
 const float c = 1.; // Courant number
 
 vec2 coord_to_uv(vec2 coord) {
@@ -21,7 +22,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         || any(greaterThan(fragCoord, iResolution.xy - vec2(border)));
     
     // Obstacles
-    if (in_border || mouse_circ) {
+    if (in_border) {
         fragColor = vec4(0.);
         return;
     }
@@ -34,9 +35,10 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
     
     // Compute kernel
-    vec2 center_prev = texture(iChannel0, fragCoord.xy / iResolution.xy).xy;
+    vec3 center_prev = texture(iChannel0, fragCoord.xy / iResolution.xy).xyz;
     float center = center_prev.x;
     float prev = center_prev.y;
+    bool obstacle = center_prev.z > 0.;
 
     float up = texture(iChannel0, (fragCoord.xy + vec2(0, 1)) / iResolution.xy).x;
     float down = texture(iChannel0, (fragCoord.xy + vec2(0, -1)) / iResolution.xy).x;
@@ -57,7 +59,9 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         next = -prev + 2. * center + .5 * c * (ddy + ddx);
     }
   
+    if (obstacle) next = 0.;
     
-    fragColor = vec4(next, center, 0., 1.);
+    fragColor = vec4(next, center, mouse_circ || obstacle, 1.);
 }
+
 
