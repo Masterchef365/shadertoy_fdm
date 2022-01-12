@@ -6,14 +6,17 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     // Output to screen
     float u = texture(iChannel0, uv).x;
     
+    u *= 20.;
+    
     vec3 color;
     if (u > 0.) {
-        color = vec3(1., 0.01, 0.01) * u;
+        color = vec3(1., 0.1, 0.1) * u;
     } else {
-        color = vec3(0.01, 0.01, 1.) * -u;
+        color = vec3(0.1, 0.4, 1.) * -u;
     }
    
    
     fragColor = vec4(color, 1.);
     //fragColor = texture(iChannel0, uv);
 }
+
