@@ -4,6 +4,16 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     vec2 uv = fragCoord/iResolution.xy;
 
     // Output to screen
-    fragColor = texture(iChannel0, uv);
-    //fragColor = vec4(vec3(1.), 1.);
+    float u = texture(iChannel0, uv).x;
+    
+    vec3 color;
+    if (u > 0.) {
+        color = vec3(1., 0.01, 0.01) * u;
+    } else {
+        color = vec3(0.01, 0.01, 1.) * -u;
+    }
+   
+   
+    fragColor = vec4(color, 1.);
+    //fragColor = texture(iChannel0, uv);
 }

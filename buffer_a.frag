@@ -1,6 +1,6 @@
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
-    const float c = 0.5;
+    const float c = 0.25;
     
     const float border = 8.;
     if (any(lessThan(fragCoord, vec2(border)))
@@ -10,20 +10,21 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
         return;
     }
 
-    if (iFrame == 0) {
+    if (iFrame <= 1) {
         //vec2 g = fract(8. * fragCoord / iResolution.xy);
         //fragColor = vec4(g.x > .5 != g.y > .5);
         float k = float(
             all(greaterThan(fragCoord, vec2(250))) &&
             all(lessThan(fragCoord, vec2(450)))
         );
-        fragColor = vec4(vec3(k), 1.);
+        fragColor = vec4(k, k, 0., 1.);
         return;
     }
     
-    float prev = texture(iChannel1, fragCoord.xy / iResolution.xy).x;
 
-    float center = texture(iChannel0, fragCoord.xy / iResolution.xy).x;
+    vec2 center_prev = texture(iChannel0, fragCoord.xy / iResolution.xy).xy;
+    float center = center_prev.x;
+    float prev = center_prev.y;
 
     float up = texture(iChannel0, (fragCoord.xy + vec2(0, 1)) / iResolution.xy).x;
     float down = texture(iChannel0, (fragCoord.xy + vec2(0, -1)) / iResolution.xy).x;
@@ -37,10 +38,12 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     float ddx = (right - 2. * center + left);
     
     if (iFrame <= 1) {
-        next = center - .5 * c * ddx;//(ddy + ddx);
+        next = center - .5 * c * (ddy + ddx);
     } else {
-        next = -prev + 2. * center + .5 * c * ddx;//(ddy + ddx);
+        next = -prev + 2. * center + .5 * c * (ddy + ddx);
     }
+  
     
-    fragColor = vec4(vec3(next), 1.);
+    fragColor = vec4(next, center, 0., 1.);
 }
+
