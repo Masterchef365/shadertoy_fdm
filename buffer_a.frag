@@ -24,7 +24,7 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
     // Mouse interaction
     vec2 mouse_pos_uv = coord_to_uv(iMouse.xy);
-    bool mouse_circ = (iMouse.z > 0.) && distance(mouse_pos_uv, uv) < 0.1;
+    bool mouse_circ = (iMouse.z > 0.) && distance(mouse_pos_uv, uv) < 0.03;
     
     // Border
     const float border = 1.;
@@ -75,6 +75,3 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     fragColor = vec4(next, center, mouse_circ || obstacle, 1.);
 }
-
-
-
