@@ -1,4 +1,3 @@
-
 const float c = 1.; // Courant number
 
 vec2 coord_to_uv(vec2 coord) {
@@ -7,6 +6,15 @@ vec2 coord_to_uv(vec2 coord) {
     uv.x *= iResolution.x / iResolution.y;
     return uv;
 }
+
+float rand(vec2 co){
+    return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
+}
+
+vec2 quant(vec2 st, float r) {
+    return floor(st * r) / r;
+}
+
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
@@ -48,20 +56,20 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     float next;
     
+    float cs = mix(0.05, 0.5, rand(quant(uv, 3.)));
+    
     // Solve differential equation
     float ddy = (up - 2. * center + down);
     float ddx = (right - 2. * center + left);
     
     if (iFrame <= 1) {
         // n = 1 special case
-        next = center - .5 * c * (ddy + ddx);
+        next = center - .5 * cs * (ddy + ddx);
     } else {
-        next = -prev + 2. * center + .5 * c * (ddy + ddx);
+        next = -prev + 2. * center + .5 * cs * (ddy + ddx);
     }
   
     if (obstacle) next = 0.;
     
     fragColor = vec4(next, center, mouse_circ || obstacle, 1.);
 }
-
-
