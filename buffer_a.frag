@@ -18,6 +18,8 @@ vec2 quant(vec2 st, float r) {
 
 void mainImage( out vec4 fragColor, in vec2 fragCoord )
 {
+    const int start = 60*4;
+
     vec2 uv = coord_to_uv(fragCoord);
 
     // Mouse interaction
@@ -36,8 +38,8 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     }
 
     // Initialization
-    if (iFrame <= 1) {
-        float k = float(length(uv) < 0.1);
+    if (iFrame - start <= 1) {
+        float k = float(length(uv) < 0.01);
         fragColor = vec4(k, k, 0., 1.);
         return;
     }
@@ -56,13 +58,13 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     float next;
     
-    float cs = mix(0.05, 0.5, rand(quant(uv, 3.)));
+    float cs = mix(0.01, 1., rand(quant(uv, 3.)));
     
     // Solve differential equation
     float ddy = (up - 2. * center + down);
     float ddx = (right - 2. * center + left);
     
-    if (iFrame <= 1) {
+    if (iFrame - start <= 1) {
         // n = 1 special case
         next = center - .5 * cs * (ddy + ddx);
     } else {
@@ -73,3 +75,6 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
     
     fragColor = vec4(next, center, mouse_circ || obstacle, 1.);
 }
+
+
+
